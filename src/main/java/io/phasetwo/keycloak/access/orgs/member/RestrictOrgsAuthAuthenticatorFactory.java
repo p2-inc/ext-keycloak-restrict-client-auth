@@ -1,14 +1,12 @@
-package io.phasetwo.keycloak.client;
+package io.phasetwo.keycloak.access.orgs.member;
 
 import static org.keycloak.models.AuthenticationExecutionModel.Requirement.DISABLED;
 import static org.keycloak.models.AuthenticationExecutionModel.Requirement.REQUIRED;
 
 import com.google.auto.service.AutoService;
-import io.phasetwo.keycloak.client.access.OrgsAccessProvider;
-import io.phasetwo.keycloak.client.common.OperationalInfo;
+import io.phasetwo.keycloak.RestrictOrgsAuthAuthenticator;
+import io.phasetwo.keycloak.common.CommunityProfiles;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.extern.jbosslog.JBossLog;
 import org.keycloak.Config;
 import org.keycloak.authentication.Authenticator;
@@ -16,21 +14,18 @@ import org.keycloak.authentication.AuthenticatorFactory;
 import org.keycloak.models.AuthenticationExecutionModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakSessionFactory;
+import org.keycloak.provider.EnvironmentDependentProviderFactory;
 import org.keycloak.provider.ProviderConfigProperty;
-import org.keycloak.provider.ProviderFactory;
-import org.keycloak.provider.ServerInfoAwareProviderFactory;
 
 @JBossLog
 @AutoService(AuthenticatorFactory.class)
 public class RestrictOrgsAuthAuthenticatorFactory
-    implements AuthenticatorFactory, ServerInfoAwareProviderFactory {
+    implements AuthenticatorFactory, EnvironmentDependentProviderFactory {
 
   private static final AuthenticationExecutionModel.Requirement[] REQUIREMENT_CHOICES =
       new AuthenticationExecutionModel.Requirement[] {REQUIRED, DISABLED};
 
   private static final String PROVIDER_ID = "restrict-orgs-auth-authenticator";
-
-  private Config.Scope config;
 
   @Override
   public String getDisplayType() {
@@ -64,27 +59,19 @@ public class RestrictOrgsAuthAuthenticatorFactory
 
   @Override
   public List<ProviderConfigProperty> getConfigProperties() {
-    return RestrictOrgsAuthConfigProperties.CONFIG_PROPERTIES;
+    return RestrictOrgsMembershipAuthConfigProperties.CONFIG_PROPERTIES;
   }
 
   @Override
   public Authenticator create(KeycloakSession session) {
-    return new RestrictOrgsAuthAuthenticator();
+    return new RestrictOrgsAuthAuthenticator(OrgMembershipBasedAccessProviderFactory.PROVIDER_ID);
   }
 
   @Override
-  public void init(Config.Scope config) {
-    this.config = config;
-  }
+  public void init(Config.Scope config) {}
 
   @Override
-  public void postInit(KeycloakSessionFactory factory) {
-    RestrictOrgsAuthConfigProperties.ACCESS_PROVIDER_ID_PROPERTY.setOptions(
-        factory
-            .getProviderFactoriesStream(OrgsAccessProvider.class)
-            .map(ProviderFactory::getId)
-            .collect(Collectors.toList()));
-  }
+  public void postInit(KeycloakSessionFactory factory) {}
 
   @Override
   public void close() {}
@@ -95,7 +82,7 @@ public class RestrictOrgsAuthAuthenticatorFactory
   }
 
   @Override
-  public Map<String, String> getOperationalInfo() {
-    return OperationalInfo.get();
+  public boolean isSupported(Config.Scope config) {
+    return CommunityProfiles.isRestrictOrgAuthenticators();
   }
 }

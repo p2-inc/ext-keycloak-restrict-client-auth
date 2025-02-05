@@ -98,8 +98,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <source>15</source>
+                    <target>15</target>
                     <compilerArgument>-Xlint:unchecked</compilerArgument>
                     <compilerArgument>-Xlint:deprecation</compilerArgument>
                     <useIncrementalCompilation>false</useIncrementalCompilation>

@@ -1,18 +1,17 @@
-package io.phasetwo.keycloak.client.access.orgs;
+package io.phasetwo.keycloak.access.orgs.member;
 
 import com.google.auto.service.AutoService;
-import io.phasetwo.keycloak.client.access.OrgsAccessProvider;
-import io.phasetwo.keycloak.client.access.OrgsAccessProviderFactory;
-import io.phasetwo.keycloak.client.common.OperationalInfo;
-import java.util.Map;
+import io.phasetwo.keycloak.access.OrgsAccessProvider;
+import io.phasetwo.keycloak.access.OrgsAccessProviderFactory;
+import io.phasetwo.keycloak.common.CommunityProfiles;
 import org.keycloak.Config;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakSessionFactory;
-import org.keycloak.provider.ServerInfoAwareProviderFactory;
+import org.keycloak.provider.EnvironmentDependentProviderFactory;
 
 @AutoService(OrgsAccessProviderFactory.class)
 public final class OrgMembershipBasedAccessProviderFactory
-    implements OrgsAccessProviderFactory, ServerInfoAwareProviderFactory {
+    implements OrgsAccessProviderFactory, EnvironmentDependentProviderFactory {
 
   public static final String PROVIDER_ID = "org-membership";
 
@@ -36,7 +35,7 @@ public final class OrgMembershipBasedAccessProviderFactory
   }
 
   @Override
-  public Map<String, String> getOperationalInfo() {
-    return OperationalInfo.get();
+  public boolean isSupported(Config.Scope config) {
+    return CommunityProfiles.isRestrictOrgAuthenticators();
   }
 }

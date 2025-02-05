@@ -1,4 +1,4 @@
-package io.phasetwo.keycloak.client.access;
+package io.phasetwo.keycloak.access;
 
 import com.google.auto.service.AutoService;
 import org.keycloak.provider.Provider;
