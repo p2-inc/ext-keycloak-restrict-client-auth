@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  keycloak:
+    image: quay.io/phasetwo/phasetwo-keycloak:26.0.8
+    entrypoint: ["/opt/keycloak/bin/kc.sh", "start-dev", "--spi-email-template-provider=freemarker-plus-mustache", "--spi-email-template-freemarker-plus-mustache-enabled=true", "--spi-restrict-orgs-auth-access-provider=true"]
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,address=*:8787,server=y,suspend=n -Xms64m -Xmx512m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m -Djava.net.preferIPv4Stack=true
+    ports:
+      - 8080:8080
+      - 8787:8787
+    volumes:
+      - ./target/ext-keycloak-restrict-client-auth-1.0-SNAPSHOT.jar:/opt/keycloak/providers/ext-keycloak-restrict-orgs-auth.jar
+    restart: always
