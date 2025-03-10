@@ -13,7 +13,7 @@ import org.keycloak.provider.EnvironmentDependentProviderFactory;
 public final class OrgRoleBasedAccessProviderFactory
     implements OrgsAccessProviderFactory, EnvironmentDependentProviderFactory {
 
-  public static final String PROVIDER_ID = "org-role";
+  public static final String PROVIDER_ID = "ext-org-role";
 
   @Override
   public OrgsAccessProvider create(KeycloakSession session) {

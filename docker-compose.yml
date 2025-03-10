@@ -2,11 +2,11 @@ version: '3.8'
 
 services:
   keycloak:
-    image: quay.io/phasetwo/phasetwo-keycloak:26.0.8
+    image: quay.io/phasetwo/phasetwo-keycloak:26.1.3
     entrypoint: ["/opt/keycloak/bin/kc.sh", "start-dev", "--spi-email-template-provider=freemarker-plus-mustache", "--spi-email-template-freemarker-plus-mustache-enabled=true"]
     environment:
-      - KEYCLOAK_ADMIN=admin
-      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
       - KC_RESTRICT_ORG_AUTHENTICATORS_ENABLED=true
       - JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,address=*:8787,server=y,suspend=n -Xms64m -Xmx512m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m -Djava.net.preferIPv4Stack=true
     ports:

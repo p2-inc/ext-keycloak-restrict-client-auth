@@ -1,11 +1,9 @@
 package io.phasetwo.keycloak;
 
-import static io.phasetwo.keycloak.common.OrgAccessConstants.ERROR_MESSAGE;
 import static io.phasetwo.keycloak.common.OrgAccessConstants.IS_REGEX;
 
 import java.util.Optional;
 import org.keycloak.models.AuthenticatorConfigModel;
-import org.keycloak.services.messages.Messages;
 
 public final class RestrictOrgsAuthConfig {
 
@@ -38,12 +36,5 @@ public final class RestrictOrgsAuthConfig {
         .map(config -> config.get(IS_REGEX))
         .map(Boolean::parseBoolean)
         .orElse(false);
-  }
-
-  String getErrorMessage() {
-    return Optional.ofNullable(authenticatorConfigModel)
-        .map(AuthenticatorConfigModel::getConfig)
-        .map(config -> config.getOrDefault(ERROR_MESSAGE, Messages.ACCESS_DENIED))
-        .orElse(Messages.ACCESS_DENIED);
   }
 }

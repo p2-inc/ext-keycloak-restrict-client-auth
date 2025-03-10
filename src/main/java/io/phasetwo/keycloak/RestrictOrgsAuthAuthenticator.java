@@ -43,6 +43,9 @@ public class RestrictOrgsAuthAuthenticator implements Authenticator {
     if (access.isPermitted(user, context.getRealm(), config)) {
       context.success();
     } else {
+      log.errorf(
+          "Authentication flow '%s' failed for user '%s' in realm '%s'.",
+          providerId, user.getUsername(), context.getRealm());
       context
           .getEvent()
           .realm(context.getRealm())
@@ -60,49 +63,32 @@ public class RestrictOrgsAuthAuthenticator implements Authenticator {
       OrgsAccessProvider accessProvider =
           context.getSession().getProvider(OrgsAccessProvider.class, providerId);
 
-      if (accessProvider == null) {
-        log.warnf("Configured access provider '%s' in authenticator not found.", providerId);
-      } else {
-        log.tracef("Using access provider '%s'.", providerId);
+      if (accessProvider != null) {
+        log.debugf("Using access provider '%s'.", providerId);
         return accessProvider;
       }
-    } else {
-      log.error("Null OrgAccessProvider for authenticator.");
     }
 
     log.warnf(
-        "Defaulting to access provider '%s'.", OrgMembershipBasedAccessProviderFactory.PROVIDER_ID);
+        "Using default access provider '%s'.", OrgMembershipBasedAccessProviderFactory.PROVIDER_ID);
     return context
         .getSession()
         .getProvider(OrgsAccessProvider.class, OrgMembershipBasedAccessProviderFactory.PROVIDER_ID);
   }
 
   private Response errorResponse(AuthenticationFlowContext context, RestrictOrgsAuthConfig config) {
-    Response response;
     if (MediaTypeMatcher.isHtmlRequest(context.getHttpRequest().getHttpHeaders())) {
-      response = htmlErrorResponse(context, config);
-    } else {
-      response = oAuth2ErrorResponse();
+      AuthenticationSessionModel authSession = context.getAuthenticationSession();
+      return context
+          .form()
+          .setError(
+              Messages.ACCESS_DENIED,
+              authSession.getAuthenticatedUser().getUsername(),
+              authSession.getClient().getClientId())
+          .createErrorPage(Response.Status.FORBIDDEN);
     }
-    return response;
-  }
-
-  private Response htmlErrorResponse(
-      AuthenticationFlowContext context, RestrictOrgsAuthConfig config) {
-    AuthenticationSessionModel authSession = context.getAuthenticationSession();
-    return context
-        .form()
-        .setError(
-            config.getErrorMessage(),
-            authSession.getAuthenticatedUser().getUsername(),
-            authSession.getClient().getClientId())
-        .createErrorPage(Response.Status.FORBIDDEN);
-  }
-
-  private static Response oAuth2ErrorResponse() {
     return Response.status(Response.Status.UNAUTHORIZED.getStatusCode())
-        .entity(
-            new OAuth2ErrorRepresentation(Messages.ACCESS_DENIED, "Access to client is denied."))
+        .entity(new OAuth2ErrorRepresentation(Messages.ACCESS_DENIED, "Access denied."))
         .type(MediaType.APPLICATION_JSON_TYPE)
         .build();
   }

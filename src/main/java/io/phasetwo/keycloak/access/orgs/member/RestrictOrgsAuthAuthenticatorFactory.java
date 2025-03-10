@@ -25,11 +25,11 @@ public class RestrictOrgsAuthAuthenticatorFactory
   private static final AuthenticationExecutionModel.Requirement[] REQUIREMENT_CHOICES =
       new AuthenticationExecutionModel.Requirement[] {REQUIRED, DISABLED};
 
-  private static final String PROVIDER_ID = "restrict-orgs-auth-authenticator";
+  private static final String PROVIDER_ID = "ext-restrict-org-user-authenticator";
 
   @Override
   public String getDisplayType() {
-    return "Restrict user authentication on orgs";
+    return "Restrict user access based on organization membership";
   }
 
   @Override
@@ -54,7 +54,7 @@ public class RestrictOrgsAuthAuthenticatorFactory
 
   @Override
   public String getHelpText() {
-    return "Restricts user authentication on orgs based on an access provider";
+    return "Restricts user access based on organization membership.";
   }
 
   @Override

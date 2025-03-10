@@ -2,7 +2,6 @@ package io.phasetwo.keycloak.access.orgs.role;
 
 import static io.phasetwo.keycloak.RestrictOrgsAuthConfig.ORGANIZATION_NAME;
 import static io.phasetwo.keycloak.RestrictOrgsAuthConfig.ROLE_NAME;
-import static io.phasetwo.keycloak.common.OrgAccessConstants.ERROR_MESSAGE;
 import static io.phasetwo.keycloak.common.OrgAccessConstants.IS_REGEX;
 import static org.keycloak.provider.ProviderConfigProperty.BOOLEAN_TYPE;
 import static org.keycloak.provider.ProviderConfigProperty.STRING_TYPE;
@@ -10,24 +9,14 @@ import static org.keycloak.provider.ProviderConfigProperty.STRING_TYPE;
 import java.util.List;
 import org.keycloak.provider.ProviderConfigProperty;
 import org.keycloak.provider.ProviderConfigurationBuilder;
-import org.keycloak.services.messages.Messages;
 
 public class RestrictOrgsRoleAuthConfigProperties {
-
-  private static final ProviderConfigProperty ERROR_MESSAGE_PROPERTY =
-      new ProviderConfigProperty(
-          ERROR_MESSAGE,
-          "Error message",
-          "Error message",
-          STRING_TYPE,
-          Messages.ACCESS_DENIED,
-          false);
 
   public static final ProviderConfigProperty ORGANIZATION_PROPERTY =
       new ProviderConfigProperty(
           ORGANIZATION_NAME,
-          "Organization",
-          "The organization used in the authenticator.",
+          "Organizations",
+          "If a organization name is provided the flow will restrict access based on that specific organization. If a regex is used the flow will restrict access to all organization which match the regex.",
           STRING_TYPE,
           null,
           false,
@@ -49,7 +38,6 @@ public class RestrictOrgsRoleAuthConfigProperties {
 
   static final List<ProviderConfigProperty> CONFIG_PROPERTIES =
       ProviderConfigurationBuilder.create()
-          .property(ERROR_MESSAGE_PROPERTY)
           .property(ORGANIZATION_PROPERTY)
           .property(IS_REGEX_PROPERTY)
           .property(ROLE_PROPERTY)
