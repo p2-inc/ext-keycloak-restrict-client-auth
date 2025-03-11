@@ -76,7 +76,7 @@ The `OrgRoleBasedAccessProvider` implements `OrgsAccessProvider` and performs th
 
 We’ve changed the license of our core extensions from the AGPL v3 to the [Elastic License v2](https://github.com/elastic/elasticsearch/blob/main/licenses/ELASTIC-LICENSE-2.0.txt).
 
-Special thanks to Sven-Torben Janus for the [keycloak-restrict-client-auth](https://github.com/sventorben/keycloak-restrict-client-auth) project which we used as a base guideline for our implementation.
+Portions of the code are inspired by the implementation of [keycloak-restrict-client-auth](https://github.com/sventorben/keycloak-restrict-client-auth) project by Copyright (c) 2021-2023 Sven-Torben Janus,  and are licensed under the [MIT License](https://github.com/p2-inc/ext-keycloak-restrict-client-auth/blob/main/src/main/java/io/phasetwo/keycloak/LICENSE.txt).
 
 All documentation, source code and other files in this repository are Copyright 2024 Phase Two, Inc.
 
